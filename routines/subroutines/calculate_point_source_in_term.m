@@ -1,3 +1,22 @@
+%
+% Calculate a term in the spheroidal wave function expansion for calculating
+% the incident field due to a point source.  This code works for both the
+% prolate and oblate cases.
+%
+% Arguments:
+%     k - the wavenumber
+%     a - the interfocal distance divided by two
+%     c - k * a
+%     m, n - the term to calculate
+%     everything - the struct containing the precomputed spheroidal wave
+%                  functions
+%     eta, xi, phi - the positions of the evaluation points in spheroidal
+%                    coordinates
+%     eta0, xi0 - the position of the point source in spheroidal coordinates
+% Return Values:
+%     change - the term
+%     max_abs_change - the maximum absolute term over all the evaluation points
+%
 function [change, max_abs_change] = calculate_point_source_in_term(k, a, c, m, n, everything, eta, xi, phi, eta0, xi0)
 	if (m == 0)
 		epsilon = 1.0;

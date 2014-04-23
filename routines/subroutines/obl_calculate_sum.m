@@ -1,3 +1,25 @@
+%
+% Calculate a oblate spheroidal wave function expansion.  This function doesn't
+% contain any code for specific cases; instead, it calls a user-specified
+% function to calculate each term in the expansion.  It also handles converting
+% the positions of the evaluation points from Cartesian coordinates to oblate
+% spheroidal coordinates and loading the precomputed oblate spheroidal wave
+% functions.
+%
+% Arguments:
+%     k - the wavenumber
+%     a - the interfocal distance divided by two
+%     path - the directory in which the oblate spheroidal wave function have
+%            been precomputed and stored
+%     x, y, z - the positions of the evaluation points in Cartesian coordinates
+%     obl_calculate_term - the function to call to calculate each term, and
+%                          should be of the form, obl_calculate_term(k, a, c,
+%                          m, n, everything, eta, xi, phi)
+% Return Values:
+%     v - the expansion
+%     max_abs_change - the maximum absolute change per term over all the
+%                      evaluation points
+%
 function [v, max_abs_change] = obl_calculate_sum(k, a, path, x, y, z, obl_calculate_term)
 	c = k * a;
 	cart = [x; y; z];

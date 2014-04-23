@@ -1,3 +1,25 @@
+%
+% Calculate a term in the spheroidal wave function expansion for calculating
+% the scattered field from an incident field due to a point source striking a
+% spheroid.  This code works for both the prolate and oblate cases.
+%
+% Arguments:
+%     k - the wavenumber
+%     a - the interfocal distance divided by two
+%     c - k * a
+%     m, n - the term to calculate
+%     everything - the struct containing the precomputed spheroidal wave
+%                  functions
+%     eta, xi, phi - the positions of the evaluation points in spheroidal
+%                    coordinates
+%     eta0, xi0 - the position of the point source in spheroidal coordinates
+%     xi1 - the size of the spheroid
+%     imped - whether the spheroid is sound soft or hard: use 'soft' for sound
+%             soft and 'hard' or sound hard
+% Return Values:
+%     change - the term
+%     max_abs_change - the maximum absolute term over all the evaluation points
+%
 function [change, max_abs_change] = calculate_point_source_scat_term(k, a, c, m, n, everything, eta, xi, phi, eta0, xi0, xi1, imped)
 	if (m == 0)
 		epsilon = 1.0;
