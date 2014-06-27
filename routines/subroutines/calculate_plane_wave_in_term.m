@@ -14,22 +14,25 @@
 %                    coordinates
 %     theta0 - the direction of the plane wave in spherical coordinates
 % Return Values:
-%     change - the term
-%     max_abs_change - the maximum absolute term over all the evaluation points
+%     v - the term
+%     dgrad - the gradient of the term in spheroidal coordinates
+%     max_abs_change - the maximum absolute change
 %
-function [change, max_abs_change] = calculate_plane_wave_in_term(k, a, c, m, n, everything, eta, xi, phi, theta0)
-	if (m == 0)
-		epsilon = 1.0;
-	else
+function [dv, dgrad, max_abs_change] = calculate_plane_wave_in_term(k, a, c, m, n, everything, eta, xi, phi, theta0)
+	if (m > 0)
 		epsilon = 2.0;
+	else
+		epsilon = 1.0;
 	end
-	change = ...
-	2.0 * ...
-	epsilon * ...
-	(1i ^ n) * ...
-	interp1(everything.S1.eta, everything.S1.S1, cos(theta0), 'spline') * ...
-	interp1(everything.S1.eta, everything.S1.S1, eta, 'spline') .* ...
-	interp1(everything.R.xi, everything.R.R1, xi, 'spline') .* ...
-	cos(m * phi);
-	max_abs_change = max(abs(change));
+	S1 = interp1(everything.S1.eta(everything.S1.S1_idxs), everything.S1.S1(everything.S1.S1_idxs), cos(theta0), 'spline');
+	A = 2.0 * epsilon * (1i ^ n) * S1;
+	S1 = interp1(everything.S1.eta(everything.S1.S1_idxs), everything.S1.S1(everything.S1.S1_idxs), eta, 'spline');
+	S1p = interp1(everything.S1.eta(everything.S1.S1p_idxs), everything.S1.S1p(everything.S1.S1p_idxs), eta, 'spline');
+	R1 = interp1(everything.R.xi(everything.R.idxs), everything.R.R1(everything.R.idxs), xi, 'spline');
+	R1p = interp1(everything.R.xi(everything.R.idxs), everything.R.R1p(everything.R.idxs), xi, 'spline');
+	Phi = cos(m * phi);
+	Phip = -m * sin(m * phi);
+	dv = A * S1 .* R1 .* Phi;
+	dgrad = A * [S1p .* R1 .* Phi; S1 .* R1p .* Phi; S1 .* R1 .* Phip];
+	max_abs_change = max(abs([dv, dgrad(1, :), dgrad(2, :), dgrad(3, :)]));
 end

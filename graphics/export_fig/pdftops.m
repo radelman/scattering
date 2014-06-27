@@ -27,6 +27,7 @@ function varargout = pdftops(cmd)
 % Mac OS.
 % Thanks to Christoph Hertel for pointing out a bug in check_xpdf_path
 % under linux.
+% 23/01/2014 - Add full path to pdftops.txt in warning.
 
 % Call pdftops
 [varargout{1:nargout}] = system(sprintf('"%s" %s', xpdf_path, cmd));
@@ -93,14 +94,14 @@ if ~good
 end
 % Update the current default path to the path found
 if ~user_string('pdftops', path_)
-    warning('Path to pdftops executable could not be saved. Enter it manually in pdftops.txt.');
+    warning('Path to pdftops executable could not be saved. Enter it manually in %s.', fullfile(fileparts(which('user_string.m')), '.ignore', 'pdftops.txt'));
     return
 end
 return
 
 function good = check_xpdf_path(path_)
 % Check the path is valid
-[good message] = system(sprintf('"%s" -h', path_));
+[good, message] = system(sprintf('"%s" -h', path_));
 % system returns good = 1 even when the command runs
 % Look for something distinct in the help text
 good = ~isempty(strfind(message, 'PostScript'));
