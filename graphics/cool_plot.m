@@ -21,7 +21,7 @@ function cool_plot(xr, yr, xlb, ylb, zlb, phis, angles, cr, cm, ax, ay)
 			colormap(cm);
 			cb = colorbar();
 			caxis(cr);
-			set(cb, 'ticklength', [0.0125, 0.0125]);
+			set(cb, 'ticklength', [1.0e-9, 1.0e-9]);
 			set(cb, 'layer', 'top');
 			set(cb, 'fontsize', 20);
 			set(get(cb, 'ylabel'), 'fontsize', 30, 'string', zlb);
