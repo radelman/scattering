@@ -85,13 +85,10 @@ function generate_figure3abc()
 	xlabel('\eta');
 	ylabel('|V|');
 	title('Field on Boundary');
-	set(gcf, 'position', [100, 100, 800, 600]);
 	set(gca, 'fontsize', 20);
-	legendh = legend('\alpha = 0', '\alpha = 1 / 3', '\alpha = 1', '\alpha = 3', '\alpha \rightarrow \infty');
-	move_legend(legendh, 4, [0.03, 0.03]);
+	legendflex_pre2014b({'\alpha = 0', '\alpha = 1 / 3', '\alpha = 1', '\alpha = 3', '\alpha \rightarrow \infty'}, 'ref', gca, 'anchor', [3, 3], 'buffer', [-30, -30]);
+	set(gcf, 'position', [100, 100, 800, 600]);
 	set(gcf, 'color', [1.0, 1.0, 1.0]);
-	export_fig(1, 'images/figure3a.pdf');
-	move_legend(legendh, 4, [0.03, 0.03]);
 	export_fig(1, 'images/figure3a.pdf');
 	close();
 	
@@ -103,13 +100,10 @@ function generate_figure3abc()
 	xlabel('\eta');
 	ylabel('|dV/dn|');
 	title('Normal Derivative on Boundary');
-	set(gcf, 'position', [100, 100, 800, 600]);
 	set(gca, 'fontsize', 20);
-	legendh = legend('\alpha = 0', '\alpha = 1 / 3', '\alpha = 1', '\alpha = 3', '\alpha \rightarrow \infty');
-	move_legend(legendh, 3, [0.03, 0.03]);
+	legendflex_pre2014b({'\alpha = 0', '\alpha = 1 / 3', '\alpha = 1', '\alpha = 3', '\alpha \rightarrow \infty'}, 'ref', gca, 'anchor', [1, 1], 'buffer', [30, -30]);
+	set(gcf, 'position', [100, 100, 800, 600]);
 	set(gcf, 'color', [1.0, 1.0, 1.0]);
-	export_fig(2, 'images/figure3b.pdf');
-	move_legend(legendh, 3, [0.03, 0.03]);
 	export_fig(2, 'images/figure3b.pdf');
 	close();
 	
@@ -121,13 +115,10 @@ function generate_figure3abc()
 	xlabel('\eta');
 	ylabel('log_{10}(|V + \alpha{}dV/dn|)');
 	title('Check on Boundary Conditions');
-	set(gcf, 'position', [100, 100, 800, 600]);
 	set(gca, 'fontsize', 20);
-	legendh = legend('\alpha = 0', '\alpha = 1 / 3', '\alpha = 1', '\alpha = 3', '\alpha \rightarrow \infty');
-	move_legend(legendh, 4, [0.03, 0.03]);
+	legendflex_pre2014b({'\alpha = 0', '\alpha = 1 / 3', '\alpha = 1', '\alpha = 3', '\alpha \rightarrow \infty'}, 'ref', gca, 'anchor', [3, 3], 'buffer', [-30, -30]);
+	set(gcf, 'position', [100, 100, 800, 600]);
 	set(gcf, 'color', [1.0, 1.0, 1.0]);
-	export_fig(3, 'images/figure3c.pdf');
-	move_legend(legendh, 4, [0.03, 0.03]);
 	export_fig(3, 'images/figure3c.pdf');
 	close();
 end
