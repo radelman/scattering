@@ -27,7 +27,7 @@
 
 #
 # This script mass-launches several MATLAB instances, and in each of them, runs
-% sandbox.m and run_tasks.m.  The calling convention for this script is:
+# sandbox.m and run_tasks.m.  The calling convention for this script is:
 #
 # perl run_tasks.pl start_at num_processes skip_every
 #
@@ -36,7 +36,7 @@
 # perl run_tasks.pl 1 8 8
 #
 # would launch eight MATLAB instances and run the following eight lines of
-% code, one in each instance:
+# code, one in each instance:
 #
 # run_tasks(1, 8, true);
 # run_tasks(2, 8, true);
