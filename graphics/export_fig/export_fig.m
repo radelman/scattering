@@ -132,11 +132,11 @@
 %           case when the background is transparent.
 %
 %   Some helpful examples and tips can be found at:
-%      http://sites.google.com/site/oliverwoodford/software/export_fig
+%      https://github.com/ojwoodford/export_fig
 %
 %   See also PRINT, SAVEAS.
 
-% Copyright (C) Oliver Woodford 2008-2012
+% Copyright (C) Oliver Woodford 2008-2014
 
 % The idea of using ghostscript is inspired by Peder Axensten's SAVEFIG
 % (fex id: 10889) which is itself inspired by EPS2PDF (fex id: 5782).
@@ -292,7 +292,7 @@ if isbitmap(options)
         A = uint8(A);
         % Crop the background
         if options.crop
-            [alpha, v] = crop_background(alpha, 0);
+            [alpha, v] = crop_borders(alpha, 0, 1);
             A = A(v(1):v(2),v(3):v(4),:);
         end
         if options.png
@@ -339,7 +339,7 @@ if isbitmap(options)
         end
         % Crop the background
         if options.crop
-            A = crop_background(A, tcol);
+            A = crop_borders(A, tcol, 1);
         end
         % Downscale the image
         A = downsize(A, options.aa_factor);
@@ -421,7 +421,7 @@ if isvector(options)
         print2eps(tmp_nam, fig, p2eArgs{:});
         % Remove the background, if desired
         if options.transparent && ~isequal(get(fig, 'Color'), 'none')
-            eps_remove_background(tmp_nam);
+            eps_remove_background(tmp_nam, 1 + using_hg2(fig));
         end
         % Add a bookmark to the PDF if desired
         if options.bookmark
@@ -468,7 +468,7 @@ else
         set(Hlims(a), 'XLimMode', Xlims{a}, 'YLimMode', Ylims{a}, 'ZLimMode', Zlims{a}, 'XTickMode', Xtick{a}, 'YTickMode', Ytick{a}, 'ZTickMode', Ztick{a});
     end
 end
-return
+end
 
 function [fig, options] = parse_args(nout, varargin)
 % Parse the input arguments
@@ -488,7 +488,7 @@ options = struct('name', 'export_fig_out', ...
                  'append', false, ...
                  'im', nout == 1, ...
                  'alpha', nout == 2, ...
-                 'aa_factor', 3, ...
+                 'aa_factor', 0, ...
                  'magnify', [], ...
                  'resolution', [], ...
                  'bookmark', false, ...
@@ -577,6 +577,11 @@ for a = 1:nargin-1
     end
 end
 
+% Set default anti-aliasing now we know the renderer
+if options.aa_factor == 0
+    options.aa_factor = 1 + 2 * (~(using_hg2(fig) && strcmp(get(fig, 'GraphicsSmoothing'), 'on')) | (options.renderer == 3));
+end
+
 % Convert user dir '~' to full path
 if numel(options.name) > 2 && options.name(1) == '~' && (options.name(2) == '/' || options.name(2) == '\')
     options.name = fullfile(char(java.lang.System.getProperty('user.home')), options.name(2:end));
@@ -653,7 +658,7 @@ if native && isbitmap(options)
         break
     end
 end
-return
+end
 
 function A = downsize(A, factor)
 % Downsample an image
@@ -680,11 +685,11 @@ catch
     % Subsample
     A = A(1+floor(mod(end-1, factor)/2):factor:end,1+floor(mod(end-1, factor)/2):factor:end,:);
 end
-return
+end
 
 function A = rgb2grey(A)
 A = cast(reshape(reshape(single(A), [], 3) * single([0.299; 0.587; 0.114]), size(A, 1), size(A, 2)), class(A));
-return
+end
 
 function A = check_greyscale(A)
 % Check if the image is greyscale
@@ -693,69 +698,9 @@ if size(A, 3) == 3 && ...
         all(reshape(A(:,:,2) == A(:,:,3), [], 1))
     A = A(:,:,1); % Save only one channel for 8-bit output
 end
-return
+end
 
-function [A, v] = crop_background(A, bcol)
-% Map the foreground pixels
-[h, w, c] = size(A);
-if isscalar(bcol) && c > 1
-    bcol = bcol(ones(1, c));
-end
-bail = false;
-for l = 1:w
-    for a = 1:c
-        if ~all(A(:,l,a) == bcol(a))
-            bail = true;
-            break;
-        end
-    end
-    if bail
-        break;
-    end
-end
-bail = false;
-for r = w:-1:l
-    for a = 1:c
-        if ~all(A(:,r,a) == bcol(a))
-            bail = true;
-            break;
-        end
-    end
-    if bail
-        break;
-    end
-end
-bail = false;
-for t = 1:h
-    for a = 1:c
-        if ~all(A(t,:,a) == bcol(a))
-            bail = true;
-            break;
-        end
-    end
-    if bail
-        break;
-    end
-end
-bail = false;
-for b = h:-1:t
-    for a = 1:c
-        if ~all(A(b,:,a) == bcol(a))
-            bail = true;
-            break;
-        end
-    end
-    if bail
-        break;
-    end
-end
-% Crop the background, leaving one boundary pixel to avoid bleeding on
-% resize
-v = [max(t-1, 1) min(b+1, h) max(l-1, 1) min(r+1, w)];
-A = A(v(1):v(2),v(3):v(4),:);
-return
-
-function eps_remove_background(fname)
+function eps_remove_background(fname, count)
 % Remove the background of an eps file
 % Open the file
 fh = fopen(fname, 'r+');
@@ -763,39 +708,40 @@ if fh == -1
     error('Not able to open file %s.', fname);
 end
 % Read the file line by line
-while true
+while count
     % Get the next line
     l = fgets(fh);
     if isequal(l, -1)
         break; % Quit, no rectangle found
     end
     % Check if the line contains the background rectangle
-    if isequal(regexp(l, ' *0 +0 +\d+ +\d+ +rf *[\n\r]+', 'start'), 1)
+    if isequal(regexp(l, ' *0 +0 +\d+ +\d+ +r[fe] *[\n\r]+', 'start'), 1)
         % Set the line to whitespace and quit
         l(1:regexp(l, '[\n\r]', 'start', 'once')-1) = ' ';
         fseek(fh, -numel(l), 0);
         fprintf(fh, l);
-        break;
+        % Reduce the count
+        count = count - 1;
     end
 end
 % Close the file
 fclose(fh);
-return
+end
 
 function b = isvector(options)
 b = options.pdf || options.eps;
-return
+end
 
 function b = isbitmap(options)
 b = options.png || options.tif || options.jpg || options.bmp || options.im || options.alpha;
-return
+end
 
 % Helper function
 function A = make_cell(A)
 if ~iscell(A)
     A = {A};
 end
-return
+end
 
 function add_bookmark(fname, bookmark_text)
 % Adds a bookmark to the temporary EPS file after %%EndPageSetup
@@ -829,4 +775,4 @@ catch ex
     rethrow(ex);
 end
 fclose(fh);
-return
+end
