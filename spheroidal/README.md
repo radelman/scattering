@@ -15,8 +15,8 @@ This will give you the entire repository, including not only the spheroidal libr
 The source code for these is in the `sphwv` directory.
 In order to compile them on your own, however, you must download the GNU MPFR library (http://www.mpfr.org).
 Since this can be tedious to do, we have compiled them for you, and provide the binaries at the following two links.
-For the Linux binaries (specifically, RHEL 5.5), download https://dl.dropboxusercontent.com/u/83368249/sphwv_linux.zip.
-For the Windows binaries, download https://dl.dropboxusercontent.com/u/83368249/sphwv_windows.zip.
+For the Linux binaries (specifically, RHEL 5.5), download https://www.dropbox.com/s/y19qu4ifjcy6bjh/sphwv_linux.zip?dl=0.
+For the Windows binaries, download https://www.dropbox.com/s/a6dswosf5e4fji9/sphwv_windows.zip?dl=0.
 Whichever platform you're on, the corresponding ZIP will contain two executables.
 Copy both of them into the `sphwv` directory.
 

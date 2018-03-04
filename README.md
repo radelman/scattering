@@ -18,12 +18,12 @@ This will set up all of the paths.
 This repository comes with the precomputed spheroidal wave functions necessary to generate these test figures.
 It will generate four figures, saving each one as a PDF in the `images` directory.
 
-4. To run `generate_figures.m`, you'll need to download more precomputed spheroidal wave functions at https://dl.dropboxusercontent.com/u/83368249/saved.zip.
+4. To run `generate_figures.m`, you'll need to download more precomputed spheroidal wave functions at https://www.dropbox.com/s/tmqr3x05mpskinw/saved.zip?dl=0.
 This ZIP is approximately 800 MB, so make sure you have enough disk space.
 Unzip the contents of saved.zip into the `saved` directory.
 Once done, run `generate_all_figures.m`, which will generate 11 figures, saving each one as a PDF in the `images` directory.
 
-5. For those interested in lower-frequency stuff, you can download https://dl.dropboxusercontent.com/u/83368249/saved_small_c.zip, which contains precomputed spheroidal wave functions for c = 0.1, 0.5, 1.0, and 5.0.
+5. For those interested in lower-frequency stuff, you can download https://www.dropbox.com/s/sor9szivwbk7v5f/saved_small_c.zip?dl=0, which contains precomputed spheroidal wave functions for c = 0.1, 0.5, 1.0, and 5.0.
 
 6. You can use the the spheroidal library to compute the spheroidal wave functions for values of c, m, and/or n that aren't included in either of these ZIPs.
 
