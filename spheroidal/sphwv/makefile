@@ -37,8 +37,8 @@ LDFLAGS = -L$(MPFR_DIR)/lib -lmpfr -lgmpxx -lgmp -lm
 %.o: %.cpp
 	$(CPP) -o $@ -c $(CPPFLAGS) $^
 sphwv: $(OBJS)
-	$(LD) -o pro_sphwv $(LDFLAGS) $(PRO_OBJS)
-	$(LD) -o obl_sphwv $(LDFLAGS) $(OBL_OBJS)
+	$(LD) -o pro_sphwv $(PRO_OBJS) $(LDFLAGS)
+	$(LD) -o obl_sphwv $(OBL_OBJS) $(LDFLAGS)
 	rm $^
 clean:
 	rm pro_sphwv
